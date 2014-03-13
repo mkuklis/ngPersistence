@@ -2,7 +2,7 @@
 
 var app = angular.module('app', ['ngPersistance']);
 
-phonecatApp.controller('TodosController', function($scope, Todos) {
+app.controller('TodosController', function($scope, Todos) {
   
   Todos.all().then(function (todos) {
     $scope.todos = todos;

@@ -18,8 +18,8 @@ function crudService($q) {
   Crud.prototype = {
     findById: function (id) {
       var deferred = $q.defer();
-      
-      persistence.load(function (model) {
+    
+      this.Model.load(id, function (model) {
         deferred.resolve(model);
       });
 
@@ -63,5 +63,3 @@ function crudService($q) {
     }
   };
 }
-
-ngPersistance.factory('crudService', [ '$q', crudService ]);

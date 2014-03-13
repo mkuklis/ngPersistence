@@ -5,12 +5,16 @@ function crudService($q) {
   function Crud(Model) {
     this.Model = Model;
     this.query = Model.all();
+    this._list = [];
+    var list = this._list;
     
     this.query.constructor.prototype.run = function () {
       var deferred = $q.defer();
       this.list(function (data) {
-        deferred.resolve(data);
+        list = add(clear(list), data);
+        deferred.resolve(list);
       });
+      
       return deferred.promise;
     }
   }
@@ -47,8 +51,11 @@ function crudService($q) {
 
     remove: function (model) {
       var deferred = $q.defer(); 
+      var list = this._list;
 
       persistence.remove(model);
+      remove(list, model);
+
       persistence.flush(function () {
         deferred.resolve(model);
       });
@@ -62,4 +69,26 @@ function crudService($q) {
       return new Crud(Model);
     }
   };
+
+  // helpers
+
+  function clear(arr) {
+    while (arr.length > 0) {
+      arr.pop();
+    }
+
+    return arr;
+  }
+
+  function add(to, from) {
+     Array.prototype.splice.apply(to, from);
+     return to;
+  }
+
+  function remove(arr, data) {
+    var index = arr.indexOf(data);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+  }
 }
